@@ -17,6 +17,7 @@ run ip netns add R2
 run ip netns add R3
 }
 
+
 setup_R1(){
  #setup veth peer
  run ip link add R1-veth1 type veth peer name R2-veth1
@@ -47,7 +48,7 @@ run ip netns exec R2 ip link set lo up
 ip netns exec R2 sysctl -w net.ipv4.ip_forward=1
 }
 
-setup_R3{
+setup_R3(){
 #setup veth peer
 run ip link set R3-veth1 netns R3 up
 
@@ -59,3 +60,12 @@ run ip netns exec R3 ip link set lo up
 #sysctl for router2
 ip netns exec R3 sysctl -w net.ipv4.ip_forward=1
 }
+
+# exec functions
+create_Router
+setup_R1
+setup_R2
+setup_R3
+
+status=0; $SHELL || status=$?
+exit $status
