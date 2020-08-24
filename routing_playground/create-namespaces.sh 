@@ -1,0 +1,71 @@
+#!/bin/bash
+
+if [[ $(id -u) -ne 0 ]] ; then
+    echo "Please run with sudo"
+    exit 1
+fi
+
+run () {
+    echo "$@"
+    "$@" || exit 1
+}
+
+create_Router(){
+#setup namespace
+run ip netns add R1
+run ip netns add R2
+run ip netns add R3
+}
+
+
+setup_R1(){
+ #setup veth peer
+ run ip link add R1-veth1 type veth peer name R2-veth1
+ run ip link set R1-veth1 netns R1 up
+
+ #R1 configuration
+ run ip netns exec R1 ip addr add 10.1.0.1/24 dev R1-veth1
+ run ip netns exec R1 ip addr add 127.0.0.1/8 dev lo
+ run ip netns exec R1 ip link set lo up
+
+ #sysctl for router1
+ ip netns exec R1 sysctl -w net.ipv4.ip_forward=1
+}
+
+setup_R2(){
+#setup veth peer
+run ip link add R2-veth2 type veth peer name R3-veth1
+run ip link set R2-veth1 netns R2 up
+run ip link set R2-veth2 netns R2 up
+
+#R2 configuration
+run ip netns exec R2 ip addr add 10.1.0.2/24 dev R2-veth1
+run ip netns exec R2 ip addr add 10.2.0.1/24 dev R2-veth2
+run ip netns exec R2 ip addr add 127.0.0.1/8 dev lo
+run ip netns exec R2 ip link set lo up
+
+#sysctl for router2
+ip netns exec R2 sysctl -w net.ipv4.ip_forward=1
+}
+
+setup_R3(){
+#setup veth peer
+run ip link set R3-veth1 netns R3 up
+
+#router3 configuration
+run ip netns exec R3 ip addr add 10.2.0.2/24 dev R3-veth1
+run ip netns exec R3 ip addr add 127.0.0.1/8 dev lo
+run ip netns exec R3 ip link set lo up
+
+#sysctl for router2
+ip netns exec R3 sysctl -w net.ipv4.ip_forward=1
+}
+
+# exec functions
+create_Router
+setup_R1
+setup_R2
+setup_R3
+
+status=0; $SHELL || status=$?
+exit $status
