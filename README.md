@@ -1,7 +1,7 @@
 # routing_playground
 Network Namespace を使用してOSPFルーティングをしたときに作ったシェルスクリプトとconfigファイルのまとめです．
 ## NetWork Namespace
-create_routhingplayground.sh で指定された環境を作ることができます．
+create-namespace.sh で指定された環境を作ることができます．
 ## Quagga ファイル
 OSPFを実現する際，今回はquaggaを使用しました．
 その時に書き込んだ 各zebraファイルと各OSPF configファイルをまとめておいてあります．
