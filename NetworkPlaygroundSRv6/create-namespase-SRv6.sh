@@ -116,7 +116,7 @@ connect_rt1_rt2 () {
     run ip netns exec R1 ip link set veth-rt1-rt2 up
     run ip netns exec R1 ip addr add fc00:12::1/64 dev veth-rt1-rt2
     run ip netns exec R1 ip -6 route add fc00:b::/64 via fc00:12::2
-    run ip netns exec R1 ip -6 route add fc00:c::/64 via fc00:12::2
+    run ip netns exec R1 ip -6 route add fc00:c::/64 encap seg6 mode encap segs fc00:b::10 dev veth-rt1-h1
     run ip netns exec R1 ip -6 route add fc00:23::/64 via fc00:12::2
 
     # configure R2
@@ -154,4 +154,3 @@ connect_rt2_rt3
 
 status=0; $SHELL || status=$?
 exit $status
-
