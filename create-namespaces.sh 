@@ -47,7 +47,7 @@ run ip netns exec R2 ip link set lo up
 ip netns exec R2 sysctl -w net.ipv4.ip_forward=1
 }
 
-setup_R3{
+setup_R3(){
 #setup veth peer
 run ip link set R3-veth1 netns R3 up
 
