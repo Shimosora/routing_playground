@@ -1,4 +1,4 @@
-# routing_playground
+# NetWork Playground v4
 Network Namespace を使用してOSPFルーティングをしたときに作ったシェルスクリプトとconfigファイルのまとめです．
 ## NetWork Namespace
 create-namespace.sh で指定された環境を作ることができます．
